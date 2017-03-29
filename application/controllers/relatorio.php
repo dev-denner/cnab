@@ -92,8 +92,7 @@ class Relatorio extends MY_Controller {
             if ($this->POST) {
                 $campos = array(Model_Empresa::ID, 'filial', 'gestor', 'cc_de', 'cc_ate', 'chapa', Model_Tipo_Operacao::ID, 'competencia', 'periodo');
                 $dados = elements($campos, $this->POST);
-                var_dump($dados);
-                exit;
+
                 $this->data['relatorio'] = $this->Model_Relatorio->getControlePagamento($dados);
                 $this->data['perguntas'] = json_encode($dados);
             }
@@ -147,11 +146,11 @@ class Relatorio extends MY_Controller {
         $objPHPExcel = new PHPExcel();
 
         $objPHPExcel->getProperties()->setCreator($this->user_info[Model_Usuario::NOME])
-                ->setLastModifiedBy($this->user_info[Model_Usuario::NOME])
-                ->setTitle('Relatorio de Arquivos Gerados:')
-                ->setSubject('APP CNAB')
-                ->setDescription('Programa que salva vidas')
-                ->setCategory('Relatorios');
+                  ->setLastModifiedBy($this->user_info[Model_Usuario::NOME])
+                  ->setTitle('Relatorio de Arquivos Gerados:')
+                  ->setSubject('APP CNAB')
+                  ->setDescription('Programa que salva vidas')
+                  ->setCategory('Relatorios');
         $objPHPExcel->getActiveSheet()->setTitle('Arquivos Gerados');
 
         $alpha = 'ABCDEFGHIJKLMNOPQRSTUVXZ';
@@ -256,7 +255,7 @@ class Relatorio extends MY_Controller {
     }
 
     public function __destruct() {
-        
+
     }
 
 }

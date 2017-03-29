@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('BASEPATH'))
-  exit('No direct script access allowed');
+    exit('No direct script access allowed');
 
 /*
   |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ if (!defined('BASEPATH'))
   |
  */
 //$config['base_url'] = 'http://192.168.1.13/cnab/';
-$config['base_url'] = 'http://intranet.grupompe.com.br/cnab/';
+$config['base_url'] = 'http://intranet-old.grupompe.com.br/cnab/';
 
 /*
   |--------------------------------------------------------------------------

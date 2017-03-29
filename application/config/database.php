@@ -51,7 +51,7 @@ if (!defined('BASEPATH'))
 $active_group = 'default';
 $active_record = TRUE;
 
-$host = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.1)(PORT = 1521))
+$host = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.205)(PORT = 1521))
     (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = MPEPROD)))';
 
 $db['default']['hostname'] = $host;
@@ -69,6 +69,45 @@ $db['default']['dbcollat'] = 'utf8_general_ci';
 $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
+
+
+$host2 = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 187.94.60.7)(PORT = 1521))
+    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = ORAINST3)))';
+
+$db['rm']['hostname'] = $host2;
+$db['rm']['username'] = 'USR_PRODUCAO_KKJNQQ';
+$db['rm']['password'] = 'F3n8#21C';
+$db['rm']['database'] = '';
+$db['rm']['dbdriver'] = 'oci8';
+$db['rm']['dbprefix'] = '';
+$db['rm']['pconnect'] = TRUE;
+$db['rm']['db_debug'] = TRUE;
+$db['rm']['cache_on'] = FALSE;
+$db['rm']['cachedir'] = '';
+$db['rm']['char_set'] = 'utf8';
+$db['rm']['dbcollat'] = 'utf8_general_ci';
+$db['rm']['swap_pre'] = '';
+$db['rm']['autoinit'] = TRUE;
+$db['rm']['stricton'] = FALSE;
+
+$host3 = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 187.94.60.7)(PORT = 1521))
+    (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = ORAINST1)))';
+
+$db['protheus']['hostname'] = $host3;
+$db['protheus']['username'] = 'USR_PRODUCAO_9ZGXI5';
+$db['protheus']['password'] = 'DbAr3m0t312';
+$db['protheus']['database'] = '';
+$db['protheus']['dbdriver'] = 'oci8';
+$db['protheus']['dbprefix'] = '';
+$db['protheus']['pconnect'] = TRUE;
+$db['protheus']['db_debug'] = TRUE;
+$db['protheus']['cache_on'] = FALSE;
+$db['protheus']['cachedir'] = '';
+$db['protheus']['char_set'] = 'utf8';
+$db['protheus']['dbcollat'] = 'utf8_general_ci';
+$db['protheus']['swap_pre'] = '';
+$db['protheus']['autoinit'] = TRUE;
+$db['protheus']['stricton'] = FALSE;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

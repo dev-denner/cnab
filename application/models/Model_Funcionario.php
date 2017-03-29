@@ -13,50 +13,57 @@
  */
 class Model_Funcionario extends MY_Model {
 
-  const TABELA = 'FUNCIONARIO';
-  const ID = 'ID_FUNCIONARIO';
-  const EMPRESA = 'CD_EMPRESA';
-  const FILIAL = 'CD_FILIAL';
-  const CHAPA = 'CD_CHAPA';
-  const NOME = 'NM_NOME';
-  const BANCO = 'CD_BANCO';
-  const AGENCIA = 'CD_AGENCIA';
-  const DIGITOAG = 'CD_AGENCIA_DIGITO';
-  const CONTA = 'CD_CONTA';
-  const DIGITO = 'CD_CONTA_DIGITO';
-  const CPF = 'CD_CPF';
-  const CCUSTO = 'CD_CCUSTO';
-  const SECAO = 'CD_SECAO';
-  const SITUACAO = 'CD_SITUACAO';
-  const PERIODO = 'CD_PERIODO_PAGTO';
+    const TABELA = 'FUNCIONARIO';
+    const ID = 'ID_FUNCIONARIO';
+    const EMPRESA = 'CD_EMPRESA';
+    const FILIAL = 'CD_FILIAL';
+    const CHAPA = 'CD_CHAPA';
+    const NOME = 'NM_NOME';
+    const BANCO = 'CD_BANCO';
+    const AGENCIA = 'CD_AGENCIA';
+    const DIGITOAG = 'CD_AGENCIA_DIGITO';
+    const CONTA = 'CD_CONTA';
+    const DIGITO = 'CD_CONTA_DIGITO';
+    const CPF = 'CD_CPF';
+    const CCUSTO = 'CD_CCUSTO';
+    const SECAO = 'CD_SECAO';
+    const SITUACAO = 'CD_SITUACAO';
+    const PERIODO = 'CD_PERIODO_PAGTO';
+    const LOGRADOURO = 'DS_LOGRADOURO';
+    const NUMERO = 'DS_NUMERO';
+    const COMPL = 'DS_COMPL';
+    const BAIRRO = 'DS_BAIRRO';
+    const CIDADE = 'DS_CIDADE';
+    const CEP = 'DS_CEP';
+    const UF = 'DS_UF';
 
-  private $RM;
+    private $RM;
 
-  public function __construct() {
-    parent::__construct();
-    $this->RM = $this->load->database('rm', TRUE);
-  }
+    public function __construct() {
+        parent::__construct();
+        $this->RM = $this->load->database('rm', TRUE);
+    }
 
-  public function getFilialRM($coligada, $cpf) {
+    public function getFilialRM($coligada, $cpf) {
 
-    $query = $this->RM->query('SELECT PF.CODFILIAL ' . self::FILIAL . ', PF.CODSITUACAO ' . self::SITUACAO . '
+        $query = $this->RM->query('SELECT PF.CODFILIAL ' . self::FILIAL . ', PF.CODSITUACAO ' . self::SITUACAO . '
                          FROM RM.PFUNC PF
                          INNER JOIN RM.PPESSOA PP
                             ON PP.CODIGO = PF.CODPESSOA
                          WHERE PP.CPF = \'' . $cpf . '\'
                            AND PF.CODCOLIGADA = ' . $coligada
-    );
+        );
 
-    if ($query->num_rows > 0) {
-      return $query->result_array();
-    } else {
-      return NULL;
+        if ($query->num_rows > 0) {
+            return $query->result_array();
+        } else {
+            return NULL;
+        }
     }
-  }
 
-  public function getFuncionariosRM($coligada, $chapa, $cpf) {
+    public function getFuncionariosRM($coligada, $chapa, $cpf) {
 
-    $query = $this->RM->query('SELECT PF.CODCOLIGADA ' . self::EMPRESA . ' ,
+        $query = $this->RM->query('SELECT PF.CODCOLIGADA ' . self::EMPRESA . ' ,
                                 PF.CHAPA ' . self::CHAPA . ',
                                 PF.NOME ' . self::NOME . ',
                                 PF.CODBANCOPAGTO ' . self::BANCO . ',
@@ -68,7 +75,14 @@ class Model_Funcionario extends MY_Model {
                                 ST.DESCRICAO ' . self::SITUACAO . ',
                                 CR.DESCRICAO ' . self::PERIODO . ',
                                 PF.CODFILIAL ' . self::FILIAL . ',
-                                REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . '
+                                REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . ',
+                                PP.RUA ' . self::LOGRADOURO . ',
+                                PP.NUMERO ' . self::NUMERO . ',
+                                PP.COMPLEMENTO ' . self::COMPL . ',
+                                PP.BAIRRO ' . self::BAIRRO . ',
+                                PP.CIDADE ' . self::CIDADE . ',
+                                PP.ESTADO ' . self::UF . ',
+                                REPLACE(REPLACE(PP.CEP, \'-\', \'\'), \' \', \'\') ' . self::CEP . '
                          FROM RM.PFUNC PF
                          LEFT JOIN RM.PCODSITUACAO ST
                             ON ST.CODCLIENTE = PF.CODSITUACAO
@@ -88,48 +102,48 @@ class Model_Funcionario extends MY_Model {
                          WHERE CHAPA = \'' . $chapa . '\'
                            AND PP.CPF = \'' . $cpf . '\'
                            AND PF.CODCOLIGADA = ' . $coligada
-    );
-    if ($query->num_rows > 0) {
-      return $query->result_array();
-    } else {
-      return NULL;
+        );
+        if ($query->num_rows > 0) {
+            return $query->result_array();
+        } else {
+            return NULL;
+        }
     }
-  }
 
-  public function getAll($page = NULL, $paginacao = NULL) {
+    public function getAll($page = NULL, $paginacao = NULL) {
 
-    try {
+        try {
 
-      $return = NULL;
+            $return = NULL;
 
-      $this->db->select('FU.*, EM.' . Model_Empresa::NOME . ' EMPRESA, BA.' . Model_Banco::NOME . ' BANCO, FI.' . Model_Filial::NOME . ' FILIAL');
-      $this->db->order_by(self::ID, "ASC");
-      $this->db->join(Model_Empresa::TABELA . ' EM', 'EM.' . Model_Empresa::COLIGADA . ' = FU.' . self::EMPRESA);
-      $this->db->join(Model_Banco::TABELA . ' BA', 'BA.' . Model_Banco::COD . ' = FU.' . self::BANCO);
-      $this->db->join(Model_Filial::TABELA . ' FI', 'FI.' . Model_Filial::FILIAL . ' = FU.' . self::FILIAL . ' AND FI.' . Model_Filial::EMPRESA . ' = FU.' . self::EMPRESA, 'LEFT');
+            $this->db->select('FU.*, EM.' . Model_Empresa::NOME . ' EMPRESA, BA.' . Model_Banco::NOME . ' BANCO, FI.' . Model_Filial::NOME . ' FILIAL');
+            $this->db->order_by(self::ID, "ASC");
+            $this->db->join(Model_Empresa::TABELA . ' EM', 'EM.' . Model_Empresa::COLIGADA . ' = FU.' . self::EMPRESA);
+            $this->db->join(Model_Banco::TABELA . ' BA', 'BA.' . Model_Banco::COD . ' = FU.' . self::BANCO);
+            $this->db->join(Model_Filial::TABELA . ' FI', 'FI.' . Model_Filial::FILIAL . ' = FU.' . self::FILIAL . ' AND FI.' . Model_Filial::EMPRESA . ' = FU.' . self::EMPRESA, 'LEFT');
 
-      if (!is_null($page) && !is_null($paginacao)) {
-        $query = $this->db->get(self::TABELA . ' FU', $page, $paginacao);
-      } else {
-        $query = $this->db->get(self::TABELA . ' FU');
-      }
+            if (!is_null($page) && !is_null($paginacao)) {
+                $query = $this->db->get(self::TABELA . ' FU', $page, $paginacao);
+            } else {
+                $query = $this->db->get(self::TABELA . ' FU');
+            }
 
-      $return = $query->result_array();
+            $return = $query->result_array();
 
-      if (!is_null($return)) {
-        return $return;
-      } else {
-        throw new Exception('Não há registros.');
-      }
-    } catch (Exception $exc) {
-      return $exc->getMessage();
+            if (!is_null($return)) {
+                return $return;
+            } else {
+                throw new Exception('Não há registros.');
+            }
+        } catch (Exception $exc) {
+            return $exc->getMessage();
+        }
     }
-  }
 
-  public function getForExcel($chapa, $banco, $agencia, $digAgencia = NULL, $conta, $digConta = NULL, $cpf) {
+    public function getForExcel($chapa, $banco, $agencia, $digAgencia = NULL, $conta, $digConta = NULL, $cpf) {
 
-    if (!is_null($cpf)) {
-      $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
+        if (!is_null($cpf)) {
+            $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
                                 PF.NOME ' . self::NOME . ',
                                 PF.CODSITUACAO ' . self::SITUACAO . ',
                                 REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . '
@@ -137,14 +151,14 @@ class Model_Funcionario extends MY_Model {
                          LEFT JOIN RM.PPESSOA PP
                             ON PP.CODIGO = PF.CODPESSOA
                          WHERE PP.CPF = \'' . $cpf . '\''
-      );
-      if ($query->num_rows > 0) {
-        return $query->result_array();
-      }
-    }
-    if (!is_null($chapa)) {
+            );
+            if ($query->num_rows > 0) {
+                return $query->result_array();
+            }
+        }
+        if (!is_null($chapa)) {
 
-      $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
+            $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
                                 PF.NOME ' . self::NOME . ',
                                 PF.CODSITUACAO ' . self::SITUACAO . ',
                                 REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . '
@@ -152,25 +166,25 @@ class Model_Funcionario extends MY_Model {
                          LEFT JOIN RM.PPESSOA PP
                             ON PP.CODIGO = PF.CODPESSOA
                          WHERE PF.CHAPA = \'' . $chapa . '\''
-      );
-      if ($query->num_rows > 0) {
-        return $query->result_array();
-      }
-    }
+            );
+            if ($query->num_rows > 0) {
+                return $query->result_array();
+            }
+        }
 
-    if (is_null($digAgencia)) {
-      $dig = '';
-    } else {
-      $dig = ' AND GA.DIGAG = \'' . $digAgencia . '\'';
-    }
+        if (is_null($digAgencia)) {
+            $dig = '';
+        } else {
+            $dig = ' AND GA.DIGAG = \'' . $digAgencia . '\'';
+        }
 
-    if (is_null($digConta)) {
-      $digC = '';
-    } else {
-      $digC = ' AND SUBSTR(TRIM(PF.CONTAPAGAMENTO), -1, 1) = \'' . $digConta . '\'';
-    }
+        if (is_null($digConta)) {
+            $digC = '';
+        } else {
+            $digC = ' AND SUBSTR(TRIM(PF.CONTAPAGAMENTO), -1, 1) = \'' . $digConta . '\'';
+        }
 
-    $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
+        $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
                                 PF.NOME ' . self::NOME . ',
                                 PF.CODSITUACAO ' . self::SITUACAO . ',
                                 REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . '
@@ -199,19 +213,19 @@ class Model_Funcionario extends MY_Model {
                                   ) - 1
                                 )
                               )  = ' . $conta
-    );
+        );
 
-    if ($query->num_rows > 0) {
-      return $query->result_array();
-    }
+        if ($query->num_rows > 0) {
+            return $query->result_array();
+        }
 
-    if (is_null($digConta)) {
-      $digC = '';
-    } else {
-      $digC = ' AND SUBSTR(TRIM(FH.CONTAPGTO), -1, 1) = \'' . $digConta . '\'';
-    }
+        if (is_null($digConta)) {
+            $digC = '';
+        } else {
+            $digC = ' AND SUBSTR(TRIM(FH.CONTAPGTO), -1, 1) = \'' . $digConta . '\'';
+        }
 
-    $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
+        $query = $this->RM->query('SELECT PF.CHAPA ' . self::CHAPA . ',
                                 PF.NOME ' . self::NOME . ',
                                 PF.CODSITUACAO ' . self::SITUACAO . ',
                                 REGEXP_REPLACE(LPAD(PP.CPF, 11, \'0\'), \'([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})\',\'\1.\2.\3-\4\') ' . self::CPF . '
@@ -243,16 +257,16 @@ class Model_Funcionario extends MY_Model {
                                   ) - 1
                                 )
                               )  = ' . $conta
-    );
-    if ($query->num_rows > 0) {
-      return $query->result_array();
-    } else {
-      return NULL;
+        );
+        if ($query->num_rows > 0) {
+            return $query->result_array();
+        } else {
+            return NULL;
+        }
     }
-  }
 
-  public function __destruct() {
-    
-  }
+    public function __destruct() {
+
+    }
 
 }
